@@ -12,10 +12,10 @@ This repository provides a native Zig implementation of Wyhash.Project is also o
 
 Why Wyhash?
 
-✅ Extremely fast performance across different architectures
-✅ High-quality randomness and strong avalanche effect
-✅ Minimal code size and efficient memory usage
-✅ Used in databases, networking, and high-performance applications
+- ✅ Extremely fast performance across different architectures
+- ✅ High-quality randomness and strong avalanche effect
+- ✅ Minimal code size and efficient memory usage
+- ✅ Used in databases, networking, and high-performance applications
 
 
 
