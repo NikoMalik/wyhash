@@ -59,6 +59,12 @@ pub fn main() !void {
 
 
 ```
+You can then import the library into your code like this
+
+```zig
+const wyhash = @import("wyhash")
+```
+
 
 #  📦 Installation/2
 
@@ -69,12 +75,6 @@ mv wyhash /path/to/your/project/directory
 ```
 
 
-
-You can then import the library into your code like this
-
-```zig
-const wyhash = @import("wyhash")
-```
 
 
 
