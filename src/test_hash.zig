@@ -1,6 +1,8 @@
 const wx = @import("hash.zig");
 const std = @import("std");
 
+const expect = std.testing.expect;
+
 //zig test test_hash.zig
 test "wx64 basic test" {
     const key: u64 = 0xdeadbeefdeadbeef;
@@ -9,6 +11,40 @@ test "wx64 basic test" {
     std.debug.print("wx64({}) = {}\n", .{ key, result });
 
     try std.testing.expect(result != 0);
+}
+
+test "wx32 basic test" {
+    const key: u32 = 0xdead;
+
+    const result = wx._wx32(key);
+    std.debug.print("wx32({}) = {}\n", .{ key, result });
+
+    try std.testing.expect(result != 0);
+}
+
+test "wx16 basic test" {
+    const key: u16 = 0xd;
+
+    const result = wx._wx16(key);
+    std.debug.print("wx16({}) = {}\n", .{ key, result });
+
+    try std.testing.expect(result != 0);
+}
+
+test "wx8 basic test" {
+    const key: u8 = 0x0f;
+
+    const result = wx._wx16(key);
+    std.debug.print("wx8({}) = {}\n", .{ key, result });
+
+    try std.testing.expect(result != 0);
+}
+
+test "wyhash(0, 0)" {
+    const data = "123";
+    std.debug.print("wx64('123') = {}\n", .{wx._whash(data[0..], 0)});
+
+    try std.testing.expect(wx._whash(data[0..], 0) != 0);
 }
 
 test "_whash hash 3 bytes" {

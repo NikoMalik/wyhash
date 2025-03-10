@@ -102,6 +102,29 @@ pub fn _wx64(key: u64) u64 {
     return _wmum(_wmum(a ^ key ^ _wyp0, a ^ key ^ _wyp1) ^ key, 8 ^ _wyp4);
 }
 
+pub fn _wx32(key: u32) u64 {
+    const p: [*]const u8 = @ptrCast(&key);
+    const key64: u64 = @intCast(key);
+    const a: u64 = wyr4(p);
+    return _wmum(_wmum(a ^ key64 ^ _wyp0, a ^ key64 ^ _wyp1) ^ key64, 4 ^ _wyp4);
+}
+
+pub fn _wx8(key: u8) u64 {
+    // const p: [*]const u8 = @ptrCast(&key);
+    const a: u64 = @intCast(key);
+    const key64: u64 = @intCast(key);
+
+    return _wmum(_wmum(a ^ key64 ^ _wyp0, key64 ^ _wyp1) ^ key64, 1 ^ _wyp4);
+}
+
+pub fn _wx16(key: u16) u64 {
+    const p: [*]const u8 = @ptrCast(&key);
+    const key64: u64 = @intCast(key);
+    const a: u64 = wyr2(p);
+
+    return _wmum(_wmum(a ^ key64 ^ _wyp0, a ^ key64 ^ _wyp1) ^ key64, 2 ^ _wyp4);
+}
+
 pub fn _whash(data: []const u8, seed: u64) u64 {
     var p: [*]const u8 = data.ptr;
     const len: usize = data.len;
