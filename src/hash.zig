@@ -31,8 +31,7 @@ inline fn wymum(x: *u64, y: *u64) void {
               [hi] "={rdx}" (hi),
             : [x_val] "{rax}" (x_val),
               [y_val] "r" (y_val),
-            : "cc"
-        );
+            : .{ .cc = true });
 
         x.* = lo;
         y.* = hi;

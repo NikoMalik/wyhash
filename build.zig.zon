@@ -1,9 +1,9 @@
 .{
-    .name = "wyhash",
+    .name = .wyhash,
+    .fingerprint = 0xa3dba3c01f959837,
 
     .version = "0.0.0",
-    .dependencies = .{
-    },
+    .dependencies = .{},
 
     .paths = .{
         "build.zig",
