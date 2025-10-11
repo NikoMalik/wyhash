@@ -68,21 +68,10 @@ inline fn wyr3(p: [*]const u8, k: usize) u64 {
 }
 
 inline fn wyr4(p: [*]const u8) u64 {
-    return @as(u64, p[0]) |
-        (@as(u64, p[1]) << 8) |
-        (@as(u64, p[2]) << 16) |
-        (@as(u64, p[3]) << 24);
+    return @as(u64, std.mem.readInt(u32, p[0..4], .little));
 }
-
 inline fn wyr8(p: [*]const u8) u64 {
-    return @as(u64, p[0]) |
-        (@as(u64, p[1]) << 8) |
-        (@as(u64, p[2]) << 16) |
-        (@as(u64, p[3]) << 24) |
-        (@as(u64, p[4]) << 32) |
-        (@as(u64, p[5]) << 40) |
-        (@as(u64, p[6]) << 48) |
-        (@as(u64, p[7]) << 56);
+    return std.mem.readInt(u64, p[0..8], .little);
 }
 
 inline fn _wyr9(p: [*]const u8) u64 {
