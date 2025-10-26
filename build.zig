@@ -15,12 +15,14 @@ pub fn build(b: *std.Build) void {
         .linkage = .static,
         .name = "wyhash",
         .root_module = lib_mod,
+        .use_llvm = true,
     });
 
     b.installArtifact(lib);
 
     const lib_unit_tests = b.addTest(.{
         .root_module = lib_mod,
+        .use_llvm = true,
     });
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);

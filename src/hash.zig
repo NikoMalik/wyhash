@@ -10,12 +10,23 @@ const _wyp2 = 0x8ebc6af09c88c6e3;
 const _wyp3 = 0x589965cc75374cc3;
 const _wyp4 = 0x1d8e4e27c47d124f;
 
+test {
+    std.testing.refAllDecls(@This());
+    _ = @import("test_hash.zig");
+}
+
 inline fn off(p: [*]const u8, offset: usize) [*]const u8 {
     return @ptrFromInt(@intFromPtr(p) + offset);
 }
 
 inline fn wyrot(x: u64) u64 {
-    return (x >> 32) | (x << 32);
+    return rotateLeft(x, 32);
+}
+
+inline fn rotateLeft(x: u64, shift: u64) u64 {
+    return struct {
+        extern fn @"llvm.fshl.i64"(a: u64, b: u64, c: u64) u64;
+    }.@"llvm.fshl.i64"(x, x, shift);
 }
 
 inline fn wymum(x: *u64, y: *u64) void {
@@ -56,7 +67,7 @@ inline fn wyr1(p: [*]const u8) u64 {
 }
 
 inline fn wyr2(p: [*]const u8) u64 {
-    return @as(u64, p[0]) | (@as(u64, p[1]) << 8);
+    return @as(u64, std.mem.readInt(u16, p[0..2], .little));
 }
 
 inline fn wyr3(p: [*]const u8, k: usize) u64 {
@@ -122,16 +133,23 @@ pub inline fn _whash(data: []const u8, seed: u64) u64 {
     var see1 = seed;
 
     if (len <= 0x03) {
+        @branchHint(.cold);
         return _wmum(_wmum(wyr3(p, len) ^ seed_var ^ _wyp0, seed_var ^ _wyp1) ^ seed_var, @as(u64, len) ^ _wyp4);
     } else if (len <= 0x08) {
+        @branchHint(.unlikely);
         return _wmum(_wmum(wyr4(off(p, 0x00)) ^ seed_var ^ _wyp0, wyr4(off(p, len - 0x04)) ^ seed_var ^ _wyp1) ^ seed_var, @as(u64, len) ^ _wyp4);
     } else if (len <= 0x10) {
+        @branchHint(.unlikely);
         return _wmum(_wmum(_wyr9(off(p, 0x00)) ^ seed_var ^ _wyp0, _wyr9(off(p, len - 0x08)) ^ seed_var ^ _wyp1) ^ seed_var, @as(u64, len) ^ _wyp4);
     } else if (len <= 0x18) {
+        @branchHint(.unlikely);
         return _wmum(_wmum(_wyr9(off(p, 0x00)) ^ seed_var ^ _wyp0, _wyr9(off(p, 0x08)) ^ seed_var ^ _wyp1) ^ _wmum(_wyr9(off(p, len - 0x08)) ^ seed_var ^ _wyp2, seed_var ^ _wyp3), @as(u64, len) ^ _wyp4);
     } else if (len <= 0x20) {
+        @branchHint(.unlikely);
+
         return _wmum(_wmum(_wyr9(off(p, 0x00)) ^ seed_var ^ _wyp0, _wyr9(off(p, 0x08)) ^ seed_var ^ _wyp1) ^ _wmum(_wyr9(off(p, 0x10)) ^ seed_var ^ _wyp2, _wyr9(off(p, len - 0x08)) ^ seed_var ^ _wyp3), @as(u64, len) ^ _wyp4);
     } else if (len <= 0x100) {
+        @branchHint(.likely);
         seed_var = _wmum(wyr8(off(p, 0x00)) ^ seed_var ^ _wyp0, wyr8(off(p, 0x08)) ^ seed_var ^ _wyp1);
         see1 = _wmum(wyr8(off(p, 0x10)) ^ see1 ^ _wyp2, wyr8(off(p, 0x18)) ^ see1 ^ _wyp3);
 
@@ -163,6 +181,7 @@ pub inline fn _whash(data: []const u8, seed: u64) u64 {
         offset = (offset - 1) % 0x20 + 1;
         p = off(p, len - offset);
     } else {
+        @branchHint(.unlikely);
         while (offset > 0x100) : ({
             offset -= 0x100;
             p = off(p, 0x100);
